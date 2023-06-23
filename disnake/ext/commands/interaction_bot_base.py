@@ -497,6 +497,8 @@ class InteractionBotBase(CommonBotBase):
         connectors: Optional[Dict[str, str]] = None,
         auto_sync: Optional[bool] = None,
         extras: Optional[Dict[str, Any]] = None,
+        auto_deferred: Optional[bool] = None,
+        auto_deferred_ephemeral: bool = False,
         **kwargs,
     ) -> Callable[[CommandCallback], InvokableSlashCommand]:
         """A shortcut decorator that invokes :func:`~disnake.ext.commands.slash_command` and adds it to
@@ -552,6 +554,12 @@ class InteractionBotBase(CommonBotBase):
                 This object may be copied by the library.
 
             .. versionadded:: 2.5
+        auto_deferred: Optional[:class:`bool`]
+            Determines whether interaction should be automatically deferred or not.
+            Defaults to ``None``.
+        auto_deferred_ephemeral: :class:`bool`
+            Determines whether auto defer should be ephemeral or not.
+            Defaults to ``False``.
 
         Returns
         -------
@@ -559,20 +567,11 @@ class InteractionBotBase(CommonBotBase):
             A decorator that converts the provided method into an InvokableSlashCommand, adds it to the bot, then returns it.
         """
 
+        params = locals()
+        del params["self"], params["kwargs"]
+
         def decorator(func: CommandCallback) -> InvokableSlashCommand:
-            result = slash_command(
-                name=name,
-                description=description,
-                options=options,
-                dm_permission=dm_permission,
-                default_member_permissions=default_member_permissions,
-                nsfw=nsfw,
-                guild_ids=guild_ids,
-                connectors=connectors,
-                auto_sync=auto_sync,
-                extras=extras,
-                **kwargs,
-            )(func)
+            result = slash_command(**params, **kwargs)(func)
             self.add_slash_command(result)
             return result
 
@@ -588,6 +587,8 @@ class InteractionBotBase(CommonBotBase):
         guild_ids: Optional[Sequence[int]] = None,
         auto_sync: Optional[bool] = None,
         extras: Optional[Dict[str, Any]] = None,
+        auto_deferred: Optional[bool] = None,
+        auto_deferred_ephemeral: bool = False,
         **kwargs,
     ) -> Callable[
         [InteractionCommandCallback[CogT, UserCommandInteraction, P]], InvokableUserCommand
@@ -630,6 +631,12 @@ class InteractionBotBase(CommonBotBase):
                 This object may be copied by the library.
 
             .. versionadded:: 2.5
+        auto_deferred: Optional[:class:`bool`]
+            Determines whether interaction should be automatically deferred or not.
+            Defaults to ``None``.
+        auto_deferred_ephemeral: :class:`bool`
+            Determines whether auto defer should be ephemeral or not.
+            Defaults to ``False``.
 
         Returns
         -------
@@ -637,19 +644,13 @@ class InteractionBotBase(CommonBotBase):
             A decorator that converts the provided method into an InvokableUserCommand, adds it to the bot, then returns it.
         """
 
+        params = locals()
+        del params["self"], params["kwargs"]
+
         def decorator(
             func: InteractionCommandCallback[CogT, UserCommandInteraction, P]
         ) -> InvokableUserCommand:
-            result = user_command(
-                name=name,
-                dm_permission=dm_permission,
-                default_member_permissions=default_member_permissions,
-                nsfw=nsfw,
-                guild_ids=guild_ids,
-                auto_sync=auto_sync,
-                extras=extras,
-                **kwargs,
-            )(func)
+            result = user_command(**params, **kwargs)(func)
             self.add_user_command(result)
             return result
 
@@ -665,6 +666,8 @@ class InteractionBotBase(CommonBotBase):
         guild_ids: Optional[Sequence[int]] = None,
         auto_sync: Optional[bool] = None,
         extras: Optional[Dict[str, Any]] = None,
+        auto_deferred: Optional[bool] = None,
+        auto_deferred_ephemeral: bool = False,
         **kwargs,
     ) -> Callable[
         [InteractionCommandCallback[CogT, MessageCommandInteraction, P]], InvokableMessageCommand
@@ -707,6 +710,13 @@ class InteractionBotBase(CommonBotBase):
                 This object may be copied by the library.
 
             .. versionadded:: 2.5
+        auto_deferred: Optional[:class:`bool`]
+            Determines whether interaction should be automatically deferred or not.
+            Defaults to ``None``.
+        auto_deferred_ephemeral: :class:`bool`
+            Determines whether auto defer should be ephemeral or not.
+            Defaults to ``False``.
+
 
         Returns
         -------
@@ -714,19 +724,13 @@ class InteractionBotBase(CommonBotBase):
             A decorator that converts the provided method into an InvokableMessageCommand, adds it to the bot, then returns it.
         """
 
+        params = locals()
+        del params["self"], params["kwargs"]
+
         def decorator(
             func: InteractionCommandCallback[CogT, MessageCommandInteraction, P]
         ) -> InvokableMessageCommand:
-            result = message_command(
-                name=name,
-                dm_permission=dm_permission,
-                default_member_permissions=default_member_permissions,
-                nsfw=nsfw,
-                guild_ids=guild_ids,
-                auto_sync=auto_sync,
-                extras=extras,
-                **kwargs,
-            )(func)
+            result = message_command(**params, **kwargs)(func)
             self.add_message_command(result)
             return result
 

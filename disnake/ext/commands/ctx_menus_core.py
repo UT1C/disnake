@@ -237,6 +237,8 @@ def user_command(
     guild_ids: Optional[Sequence[int]] = None,
     auto_sync: Optional[bool] = None,
     extras: Optional[Dict[str, Any]] = None,
+    auto_deferred: Optional[bool] = None,
+    auto_deferred_ephemeral: bool = False,
     **kwargs,
 ) -> Callable[[InteractionCommandCallback[CogT, UserCommandInteraction, P]], InvokableUserCommand]:
     """A shortcut decorator that builds a user command.
@@ -276,12 +278,21 @@ def user_command(
             This object may be copied by the library.
 
         .. versionadded:: 2.5
+    auto_deferred: Optional[:class:`bool`]
+        Determines whether interaction should be automatically deferred or not.
+        Defaults to ``None``.
+    auto_deferred_ephemeral: :class:`bool`
+        Determines whether auto defer should be ephemeral or not.
+        Defaults to ``False``.
 
     Returns
     -------
     Callable[..., :class:`InvokableUserCommand`]
         A decorator that converts the provided method into an InvokableUserCommand and returns it.
     """
+
+    params = locals()
+    del params["kwargs"], params["func"]
 
     def decorator(
         func: InteractionCommandCallback[CogT, UserCommandInteraction, P]
@@ -292,17 +303,7 @@ def user_command(
             raise TypeError("Callback is already a command.")
         if guild_ids and not all(isinstance(guild_id, int) for guild_id in guild_ids):
             raise ValueError("guild_ids must be a sequence of int.")
-        return InvokableUserCommand(
-            func,
-            name=name,
-            dm_permission=dm_permission,
-            default_member_permissions=default_member_permissions,
-            nsfw=nsfw,
-            guild_ids=guild_ids,
-            auto_sync=auto_sync,
-            extras=extras,
-            **kwargs,
-        )
+        return InvokableUserCommand(func, **params, **kwargs)
 
     return decorator
 
@@ -316,6 +317,8 @@ def message_command(
     guild_ids: Optional[Sequence[int]] = None,
     auto_sync: Optional[bool] = None,
     extras: Optional[Dict[str, Any]] = None,
+    auto_deferred: Optional[bool] = None,
+    auto_deferred_ephemeral: bool = False,
     **kwargs,
 ) -> Callable[
     [InteractionCommandCallback[CogT, MessageCommandInteraction, P]],
@@ -358,12 +361,21 @@ def message_command(
             This object may be copied by the library.
 
         .. versionadded:: 2.5
+    auto_deferred: Optional[:class:`bool`]
+        Determines whether interaction should be automatically deferred or not.
+        Defaults to ``None``.
+    auto_deferred_ephemeral: :class:`bool`
+        Determines whether auto defer should be ephemeral or not.
+        Defaults to ``False``.
 
     Returns
     -------
     Callable[..., :class:`InvokableMessageCommand`]
         A decorator that converts the provided method into an InvokableMessageCommand and then returns it.
     """
+
+    params = locals()
+    del params["kwargs"], params["func"]
 
     def decorator(
         func: InteractionCommandCallback[CogT, MessageCommandInteraction, P]
@@ -374,16 +386,6 @@ def message_command(
             raise TypeError("Callback is already a command.")
         if guild_ids and not all(isinstance(guild_id, int) for guild_id in guild_ids):
             raise ValueError("guild_ids must be a sequence of int.")
-        return InvokableMessageCommand(
-            func,
-            name=name,
-            dm_permission=dm_permission,
-            default_member_permissions=default_member_permissions,
-            nsfw=nsfw,
-            guild_ids=guild_ids,
-            auto_sync=auto_sync,
-            extras=extras,
-            **kwargs,
-        )
+        return InvokableMessageCommand(func, **params, **kwargs)
 
     return decorator
