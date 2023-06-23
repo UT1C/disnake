@@ -19,6 +19,7 @@ from typing import (
     Optional,
     Sequence,
     Tuple,
+    Iterable,
 )
 
 from ..components import (
@@ -35,6 +36,7 @@ from ..components import (
 from ..enums import ComponentType, try_enum_to_int
 from ..utils import assert_never
 from .item import Item
+from .button import Button as UIButton
 
 __all__ = ("View",)
 
@@ -570,3 +572,58 @@ class ViewStore:
         view.refresh(
             [_component_factory(d, type=ActionRowComponent[MessageComponent]) for d in components]
         )
+
+
+class Keyboard(View):
+    """:class:`View` for buttons, providing special interfaces for them."""
+
+    def from_iterables(
+        self,
+        *iterables: Iterable[UIButton],
+        start: int = 0
+    ) -> Self:
+        """Adds buttons to view from their 2D representation and sets correct row for them.
+
+        Parameters
+        -----------
+        *iterables: Iterable[:class:`~disnake.ui.Button`]
+            Row of buttons.
+        start: :class:`int`, default=0
+            Row number from which counting started.
+
+        Returns
+        -----------
+        `Self`
+        """
+        # not classmethod for supporting all __init__ args
+
+        for row, buttons in enumerate(iterables, start=start):
+            for button in buttons:
+                button.row = row
+                self.add_item(button)
+        return self
+
+    def add_row(
+        self,
+        *buttons: UIButton,
+        row: int | None = None
+    ) -> Self:
+        """Adds row of buttons to view
+
+        Parameters
+        -----------
+        *buttons: :class:`~disnake.ui.Button`
+            Buttons to be inserted into row.
+        row: :class:`int`, optional
+            Insert row number.
+
+        Returns
+        -----------
+        `Self`
+        """
+
+        for i in buttons:
+            if row is not None:
+                i.row = row
+            self.add_item(i)
+        return self
