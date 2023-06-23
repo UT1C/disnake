@@ -119,6 +119,12 @@ class InvokableApplicationCommand(ABC):
         A dict of user provided extras to attach to the command.
 
         .. versionadded:: 2.5
+    auto_deferred: Optional[:class:`bool`]
+        Determines whether interaction should be automatically deferred or not.
+        Defaults to ``None``.
+    auto_deferred_ephemeral: :class:`bool`
+        Determines whether auto defer should be ephemeral or not.
+        Defaults to ``False``.
     """
 
     __original_kwargs__: Dict[str, Any]

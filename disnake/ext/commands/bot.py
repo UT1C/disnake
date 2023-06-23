@@ -392,10 +392,8 @@ class InteractionBot(InteractionBotBase, disnake.Client):
         .. versionadded:: 2.5
 
     auto_deferred_interactions: :class:`bool`
-        TODO
+        Determines whether interactions should be automatically deferred or not.
         Defaults to ``False``.
-
-        .. versionadded:: TODO
 
     Attributes
     ----------
