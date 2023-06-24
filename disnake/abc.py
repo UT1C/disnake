@@ -1797,6 +1797,9 @@ class Messageable:
         """
         return Typing(self)
 
+    async def getch_message(self, id: int, /) -> Message:
+        return self._state._get_message(id) or await self.fetch_message(id)
+
     async def fetch_message(self, id: int, /) -> Message:
         """|coro|
 

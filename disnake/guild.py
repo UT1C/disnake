@@ -771,7 +771,10 @@ class Guild(Hashable):
 
         return self._channels.get(id) or self._threads.get(id)
 
-    def get_channel_or_thread(self, channel_id: int, /) -> Optional[Union[Thread, GuildChannel]]:
+    async def getch_channel(self, channel_id: int, /) -> Union[Thread, GuildChannel]:
+        return self.get_channel_or_thread(channel_id) or await self.fetch_channel(channel_id)
+
+    def get_channel_or_thread(self, channel_id: int, /) -> Union[Thread, GuildChannel, None]:
         """Returns a channel or thread with the given ID.
 
         .. versionadded:: 2.0

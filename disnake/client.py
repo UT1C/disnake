@@ -1262,6 +1262,9 @@ class Client:
         if isinstance(channel, StageChannel):
             return channel.instance
 
+    async def getch_guild(self, id: int, /) -> Guild:
+        return self.get_guild(id) or await self.fetch_guild(id)
+
     def get_guild(self, id: int, /) -> Optional[Guild]:
         """Returns a guild with the given ID.
 
