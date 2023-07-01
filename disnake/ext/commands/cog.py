@@ -396,7 +396,11 @@ class Cog(metaclass=CogMeta):
         return getattr(method.__func__, "__cog_special_method__", method)
 
     @classmethod
-    def listener(cls, name: Union[str, Event] = MISSING) -> Callable[[FuncT], FuncT]:
+    def listener(
+        cls,
+        name: Union[str, Event] = MISSING,
+        pass_eventname: bool = MISSING,
+    ) -> Callable[[FuncT], FuncT]:
         """A decorator that marks a function as a listener.
 
         This is the cog equivalent of :meth:`.Bot.listen`.
@@ -425,6 +429,8 @@ class Cog(metaclass=CogMeta):
             if not asyncio.iscoroutinefunction(actual):
                 raise TypeError("Listener function must be a coroutine function.")
             actual.__cog_listener__ = True
+            if pass_eventname is not MISSING and pass_eventname:
+                actual.__listener_pass_eventname__ = True
             to_assign = (
                 actual.__name__
                 if name is MISSING
