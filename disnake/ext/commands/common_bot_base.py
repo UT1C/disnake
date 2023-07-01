@@ -87,7 +87,16 @@ class CommonBotBase(Generic[CogT]):
         super().dispatch(event_name, *args, **kwargs)  # type: ignore
         ev = "on_" + event_name
         for event in self.extra_events.get(ev, []):
-            self._schedule_event(event, ev, *args, **kwargs)  # type: ignore
+            _args = args
+
+            actual = event
+            if isinstance(actual, staticmethod):
+                actual = actual.__func__
+            pass_eventname = getattr(actual, "__listener_pass_eventname__")
+            if pass_eventname:
+                _args = (event_name, *args)
+
+            self._schedule_event(event, ev, *_args, **kwargs)  # type: ignore
 
     async def _fill_owners(self) -> None:
         if self.owner_id or self.owner_ids:
