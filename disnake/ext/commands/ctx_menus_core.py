@@ -291,8 +291,8 @@ def user_command(
         A decorator that converts the provided method into an InvokableUserCommand and returns it.
     """
 
-    params = locals()
-    del params["kwargs"], params["func"]
+    params = locals().copy()
+    del params["kwargs"]
 
     def decorator(
         func: InteractionCommandCallback[CogT, UserCommandInteraction, P]
@@ -374,8 +374,8 @@ def message_command(
         A decorator that converts the provided method into an InvokableMessageCommand and then returns it.
     """
 
-    params = locals()
-    del params["kwargs"], params["func"]
+    params = locals().copy()
+    del params["kwargs"]
 
     def decorator(
         func: InteractionCommandCallback[CogT, MessageCommandInteraction, P]

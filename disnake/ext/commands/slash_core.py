@@ -823,8 +823,8 @@ def slash_command(
         A decorator that converts the provided method into an InvokableSlashCommand and returns it.
     """
 
-    params = locals()
-    del params["kwargs"], params["func"]
+    params = locals().copy()
+    del params["kwargs"]
 
     def decorator(func: CommandCallback) -> InvokableSlashCommand:
         if not asyncio.iscoroutinefunction(func):
