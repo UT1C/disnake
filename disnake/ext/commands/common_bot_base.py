@@ -92,7 +92,7 @@ class CommonBotBase(Generic[CogT]):
             actual = event
             if isinstance(actual, staticmethod):
                 actual = actual.__func__
-            pass_eventname = getattr(actual, "__listener_pass_eventname__")
+            pass_eventname = getattr(actual, "__listener_pass_eventname__", False)
             if pass_eventname:
                 _args = (event_name, *args)
 
